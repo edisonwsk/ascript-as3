@@ -149,6 +149,15 @@ package parser
 			}
 			return new DY(_name,args);
 		}
+		
+		static public function New(...args):DY{
+			if(args.length==0){
+				var _name="__DY";//匿名类
+			}else{
+				var _name=args.shift();
+			}
+			return new DY(_name,args);
+		}
 		/**
 		 *为某个脚本类声明一个脚本函数 
 		 * @param code
