@@ -190,8 +190,11 @@ package parser
 		}
 		private function DecList():void{
 			var cnode:GNode;
-			while(tok.type==TokenType.keyvar || tok.type==TokenType.keyfunction || tok.type==TokenType.keypublic || tok.type==TokenType.keyprivate || tok.type==TokenType.keyprotected){
-				if(tok.type==TokenType.keyvar){
+			while(tok.type==TokenType.keyimport || tok.type==TokenType.keyvar || tok.type==TokenType.keyfunction || tok.type==TokenType.keypublic || tok.type==TokenType.keyprivate || tok.type==TokenType.keyprotected){
+				
+				if(tok.type==TokenType.keyimport){
+					doimport();
+				} else if(tok.type==TokenType.keyvar){
 					cnode=varst();
 					fields[cnode.name]=cnode;
 				}else if(tok.type==TokenType.keyfunction){
@@ -892,7 +895,7 @@ package parser
 			}
 		}
 		private function error(str:String="未知错误"):void{
-			throw new Error(str+"-> 发生在这个单词附近"+this.tok.word);
+			throw new Error(this.name+">>"+str+"-> 发生在这个单词附近"+this.tok.word);
 		}
 	}
 }
