@@ -34,6 +34,7 @@ package parser
 	import flash.net.URLRequest;
 	import flash.system.ApplicationDomain;
 	import flash.utils.getDefinitionByName;
+	import flash.utils.getTimer;
 	
 	import parse.Lex;
 	import parse.ProxyFunc;
