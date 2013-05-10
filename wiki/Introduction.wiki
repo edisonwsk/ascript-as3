@@ -1,0 +1,14 @@
+#summary AScript简介
+#labels Featured
+
+= AScript是什么？ =
+
+Ascript是一种解释型脚本语言，用ActionScript3实现，并且能和ActionScript3无缝结合，无需编译，即可执行。
+
+= AScript能做什么？ =
+
+Ascript并不想帮你编写大量的代码，Ascript让你用少量的代码解决动态数据和动态逻辑配置等问题。
+
+Ascript是一个小巧而嵌入式的语言，可以帮助你动态的测试自己的API，语法和as3基本相同，会方便任何熟悉此类语言的人轻易使用，实际上，这个语言能直接运行大部分as3类。
+
+因为Ascript不致力于做as3语言已经做得很好的领域，比如：UI库，游戏底层渲染，物理系统，以及与第三方软件的接口。Ascript依赖于as3去做完成这些任务。Ascript所提供的机制是as3不善于的：动态数据和逻辑等。
