@@ -1,4 +1,4 @@
-#summary One-sentence summary of this page.
+#如何使用AScript
 
 = 使用AScript =
 
