@@ -1,12 +1,12 @@
-#如何使用AScript
+#summary AScript入门
 
-= 使用AScript =
+= AScript起航 =
 
-使用AScript仅需要简单的几个步骤。
- # 将ascript.swc包含到项目库路径。
- # 通过以下代码初始化脚本引擎。注意 root是文档类实例。
+AScript的使用非常简单，因为它和ActionScript几乎完全一样。让我们从一个简单的例子开始。
+= AScript定义函数 =
+下面的例子定义了一个AScript函数Add，并在ActionScript中调用它。
 {{{
-parser.Script.init(root:Sprite)
+Script.declare("function Add(a,b){return a+b;}");
+var func:Function=Script.getFunc("Add");
+trace(func(200,200));//将输出400
 }}}
-至此您可以开始体验AScript的各种特性。
-更多内容请访问APIReference
