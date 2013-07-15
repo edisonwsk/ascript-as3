@@ -1,4 +1,4 @@
-#如何使用AScript
+#summary 如何使用AScript
 
 = 使用AScript =
 
