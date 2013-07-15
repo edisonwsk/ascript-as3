@@ -1,0 +1,12 @@
+#如何使用AScript
+
+= 使用AScript =
+
+使用AScript仅需要简单的几个步骤。
+ # 将ascript.swc包含到项目库路径。
+ # 通过以下代码初始化脚本引擎。注意 root是文档类实例。
+{{{
+parser.Script.init(root:Sprite)
+}}}
+至此您可以开始体验AScript的各种特性。
+更多内容请访问APIReference
