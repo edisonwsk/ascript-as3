@@ -45,8 +45,8 @@ package parse
 			return dics[_it][fn].Func;
 		}
 		//
-		var it:DY;//首先明确是哪个脚本类的哪个方法
-		var funcname:String;//这是it监听函数名。
+		private var it:DY;//首先明确是哪个脚本类的哪个方法
+		private var funcname:String;//这是it监听函数名。
 		public function ProxyFunc(_it:DY,fn:String)
 		{
 			it=_it;
@@ -54,6 +54,7 @@ package parse
 		}
 		public function Func(...args){
 			try{
+				//trace(it._rootnode.name+" call "+funcname+"("+args+")")
 				return it.call(funcname,args);
 			}catch(e:Error){
 				trace(e.getStackTrace());

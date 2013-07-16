@@ -38,6 +38,9 @@ package parse {
 					//当类型为关键字，则为其单词，
 		public var word:String;
 		public var line:int=0;
+		public var linestr:String="";
+		public var index:int;
+		//
 		public static var wordpatten:String="|extends|in|package|for|var|new|class|function|if|else|while|return|import|public|private|protected|switch|case|break|continue|default|try|catch|finally|each|";
 		public function Token(){
 		}

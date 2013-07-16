@@ -57,7 +57,7 @@ package parser
 			return null;
 		}
 		//第几行
-		public function get lineno():int{
+		public function get line():int{
 			return token.line;
 		}
 		//

@@ -23,6 +23,13 @@ THE SOFTWARE.
 
 http://code.google.com/p/ascript-as3/
 http://ascript.softplat.com/
+
+注意事项：
+1，不支持  get set 属性 
+2,不支持 as is typeof instanceof语法
+3,方法调用的左值，无法用点语法往后估值
+4,不支持命名空间
+5,不支持匿名函数
 */       
 
 package parser
@@ -34,6 +41,7 @@ package parser
 	import flash.net.URLRequest;
 	import flash.system.ApplicationDomain;
 	import flash.utils.getDefinitionByName;
+	import flash.utils.getTimer;
 	
 	import parse.Lex;
 	import parse.ProxyFunc;
@@ -77,10 +85,19 @@ package parser
 		}
 		static public var _root:Sprite;
 		//
-		static public function init(r:Sprite,code:String=null){
+		static public function set root(r:Sprite){
 			_root=r;
 			app=r.loaderInfo.applicationDomain;
+		}
+		static public function init(code:String=null){
+			
 			Debug=getDef("Debug");
+			DY.prototype.toString=function():String{
+				return "这是一个脚本类";
+			}
+			Script.addAPI("parseInt",parseInt);
+			Script.addAPI("parseFloat",parseFloat);
+			//
 			//
 			if(code){
 				____globalclass=LoadFromString(code);
@@ -110,6 +127,8 @@ package parser
 		 */		
 		static public function LoadFromString(code:String){
 			code=code.replace(/public /g,"");
+			code=code.replace(/private /g,"");
+			code=code.replace(/protected /g,"");
 			return new GenTree(code);
 		}
 		/**
@@ -147,8 +166,21 @@ package parser
 			}else{
 				var _name=args.shift();
 			}
+			if(GenTree.hasScript(_name)){
+				return new DY(_name,args);
+			}
+			return null;
+		}
+		
+		static public function New(...args):DY{
+			if(args.length==0){
+				var _name="__DY";//匿名类
+			}else{
+				var _name=args.shift();
+			}
 			return new DY(_name,args);
 		}
+		
 		/**
 		 *为某个脚本类声明一个脚本函数 
 		 * @param code
@@ -158,7 +190,7 @@ package parser
 		 */		
 		static public function declare(code:String,clname:String="____globalclass"){
 			//trace(code);
-			if(GenTree.Branch[clname]){
+			if(GenTree.hasScript(clname)){
 				var lex:Lex=new Lex(code);
 				var cnode:GNode=(GenTree.Branch[clname] as GenTree).declares(lex);
 				//trace(cnode.toString());
