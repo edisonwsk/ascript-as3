@@ -28,6 +28,11 @@ http://ascript.softplat.com/
 package parser
 {
 	
+	import flash.filesystem.File;
+	import flash.filesystem.FileMode;
+	import flash.filesystem.FileStream;
+	import flash.system.Capabilities;
+	
 	import parse.Lex;
 	import parse.Token;
 	import parse.TokenType;
@@ -50,6 +55,39 @@ package parser
 		
 		public var Package:String="";
 		//
+		public static  function get isMobile():Boolean
+		{
+			return Capabilities.manufacturer.indexOf('Android') > -1 || Capabilities.manufacturer.indexOf('iOS') > -1;
+		}
+		
+		static public function hasScript(scname:String):Boolean{
+			CONFIG::air{
+				if(!Branch[scname]){
+					if(isMobile){
+						var f:File=new File(Script.vm.assetdir+"panel/"+scname+".as");
+					}else{
+						f=File.applicationDirectory.resolvePath("asset/panel/"+scname+".as");
+					}
+					
+					if(f.exists){
+						//解析
+						var fs:FileStream=new FileStream();
+						fs.open(f,FileMode.READ);
+						var str=fs.readUTFBytes(f.size);
+						fs.close();
+						trace("load=="+scname);
+						Script.LoadFromString(str);
+					}else{
+						trace(scname+"不存在");
+					}
+				}
+			}
+			if(Branch[scname]){
+				
+				return true;
+			}
+			return false;
+		}
 		function GenTree(code:String)
 		{
 			lex=new Lex(code);
@@ -190,8 +228,11 @@ package parser
 		}
 		private function DecList():void{
 			var cnode:GNode;
-			while(tok.type==TokenType.keyvar || tok.type==TokenType.keyfunction || tok.type==TokenType.keypublic || tok.type==TokenType.keyprivate || tok.type==TokenType.keyprotected){
-				if(tok.type==TokenType.keyvar){
+			while(tok.type==TokenType.keyimport || tok.type==TokenType.keyvar || tok.type==TokenType.keyfunction || tok.type==TokenType.keypublic || tok.type==TokenType.keyprivate || tok.type==TokenType.keyprotected){
+				
+				if(tok.type==TokenType.keyimport){
+					doimport();
+				} else if(tok.type==TokenType.keyvar){
 					cnode=varst();
 					fields[cnode.name]=cnode;
 				}else if(tok.type==TokenType.keyfunction){
@@ -402,7 +443,7 @@ package parser
 								match(TokenType.ident);
 							}
 						}else{
-							error("Catch变量参数错误");
+							error();
 						}
 						match(TokenType.RParent);
 						tnode.addChild(stlist());
@@ -412,7 +453,7 @@ package parser
 							cnode.addChild(stlist());//第2节点为捕获部分
 						}
 					}else{
-						error("匹配出错，不能存在无catch的try");
+						error();
 					}
 					return cnode;
 					break;
@@ -432,9 +473,13 @@ package parser
 						match(TokenType.Colon);
 						//tnode.addChild(new GNode(GNodeType.Stms));
 						ccc=0;
-						while(tok.type!=TokenType.keycase && tok.type!=TokenType.keydefault){
+						while(tok.type!=TokenType.keycase && tok.type!=TokenType.keydefault && tok.type!=TokenType.RBRACE){
 							ccc++;
+							if(tnode==null){
+								trace("分析case出现严重错误");
+							}
 							tnode.addChild(st());
+							
 							if(ccc>200){
 								trace("分析case结构陷入死循环，请查看case部分代码");
 								break;
@@ -532,7 +577,8 @@ package parser
 					return cnode;
 					break;
 				default:
-					error("未知的语句头="+tok.type.id);
+					
+					error();
 			}
 			return null;
 		}
@@ -719,9 +765,78 @@ package parser
 			}
 			return null;
 		}
-		private function facter():GNode{
+		private function priority(s:GNode){
+			if(s.nodeType==GNodeType.MOP){
+				if(s.word=="+" || s.word=="-"){
+					return 1;
+				}
+				return 2;
+			}
+			return 3;
+		}
+		private function MopFactor():GNode{
 			var tnode:GNode;
 			var cnode:GNode;
+			var nodearr:Array=[];//输出后缀表达式
+			var stack:Array=[];//符号堆栈
+			nodearr.push(gene());
+			if(tok.type==TokenType.MOP){
+				while(tok.type==TokenType.MOP){
+					cnode=new GNode(GNodeType.MOP,tok);
+					var pri=priority(cnode);
+					if(stack.length==0){
+						//stack.push(cnode);
+					}else{
+						var len=stack.length-1;
+						for(var i=len;i>=0;i--){
+							if(priority(stack[i] as GNode)>=pri){//压入到输出
+								nodearr.push(stack.pop());
+							}else{
+								break;
+							}
+						}
+					}
+					stack.push(cnode);//符号入栈
+					match(TokenType.MOP);
+					nodearr.push(gene());
+				}
+				//5+10*(100-3);
+				while(stack.length>0){
+					nodearr.push(stack.pop());//压入到输出
+				}
+				
+				//通过以上2步，已经做到了后缀表达式
+				var ccc=""
+				for(var i=0;i<nodearr.length;i++){
+					ccc+=(nodearr[i] as GNode).word+".";
+				}
+				//trace(ccc);
+				//转为语法树返回
+				
+				for(var i=0;i<nodearr.length;i++){
+					if((nodearr[i] as GNode).childs.length==0 && (nodearr[i] as GNode).nodeType==GNodeType.MOP){//
+						tnode=(nodearr[i] as GNode);
+						var right=stack.pop();
+						var left=stack.pop();
+						tnode.addChild(left);
+						tnode.addChild(right);
+						stack.push(tnode);
+					}else{
+						stack.push(nodearr[i]);
+					}
+				}
+				if(stack.length==1){
+					//trace((stack[0] as GNode).toString());
+					return stack[0];
+				}else{
+					error();//"错误的表达式"
+				}
+				
+			}
+			return nodearr[0];
+		}
+		private function facter():GNode{
+			
 			switch (tok.type){
 				case TokenType.ident:
 				case TokenType.constant:
@@ -729,33 +844,16 @@ package parser
 				case TokenType.keynew:
 				case TokenType.LOPNot:
 				case TokenType.INCREMENT:
-					tnode=gene();
-					if(tok.type==TokenType.MOP){
-						cnode=new GNode(GNodeType.MOP,tok);	
-						match(TokenType.MOP);
-						cnode.addChild(tnode);
-						cnode.addChild(facter());
-						return cnode;
-					}else{
-						return tnode;
-					}
+					return MopFactor();
+					//
 					break;
 				case TokenType.MOP:
 					if(tok.word=="-"){
-						tnode=gene();
-						if(tok.type==TokenType.MOP){
-							cnode=new GNode(GNodeType.MOP,tok);	
-							match(TokenType.MOP);
-							cnode.addChild(tnode);
-							cnode.addChild(facter());
-							return cnode;
-						}else{
-							return tnode;
-						}
+						return MopFactor();
 					}
 					break;
 				default:
-					error("未知的短语头="+tok.type);
+					error();
 			}
 			return null;
 		}
@@ -885,14 +983,14 @@ package parser
 		private function match(type:TokenType):void{
 			//trace("try eat ",tok.word);
 			if(type==tok.type){
-				//trace("---->eat="+str);
+				//trace("---->eat="+str);x
 				nextToken();
 			}else{//匹配失败
-				error("解析匹配失败==="+tok.word+"==>位置："+tok.line);
+				error();
 			}
 		}
-		private function error(str:String="未知错误"):void{
-			throw new Error(str+"-> 发生在这个单词附近"+this.tok.word);
+		private function error():void{
+			throw new Error(this.name+"语法错误>行号:"+tok.line+","+tok.linestr+"，单词："+tok.word);
 		}
 	}
 }

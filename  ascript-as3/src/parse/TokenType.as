@@ -98,7 +98,7 @@ package parse
 		//方括号
 		public static var LBRACKET:TokenType=new TokenType(30);
 		public static var RBRACKET:TokenType=new TokenType(31);
-		
+		//冒号
 		public static var Colon:TokenType=new TokenType(32);
 		
 		//

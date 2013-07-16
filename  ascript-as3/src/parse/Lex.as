@@ -26,9 +26,7 @@ http://ascript.softplat.com/
 */       
 
 package parse {
-	import flash.display.Sprite;
 	import flash.events.EventDispatcher;
-	import flash.text.engine.BreakOpportunity;
 	import flash.utils.Dictionary;
 
 	//import util.col.Set;
@@ -36,59 +34,54 @@ package parse {
        * @author dayu
        */
       public class Lex extends EventDispatcher{
-            var str:String;
-            var line:int;//记录当前分析的行
-			var lines:Array;//
-            var ptr:uint;//当前指针
+            private var str:String;
+			private var line:int;//记录当前分析的行
+			private var lines:Array;//
+			private var ptr:uint;//当前指针
             public var words:Array;//一个文件最终被分成单词。
-            var word:String;//当前正在分析的串
-            var ch:String;//当前字符
-            var loadnew:Boolean=false;
+			private var word:String;//当前正在分析的串
+			private var ch:String;//当前字符
+			private var loadnew:Boolean=false;
 			static public var treecach:Dictionary=new Dictionary();
-			var undot:Boolean=false;//是否忽略dot
+			private var undot:Boolean=false;//是否忽略dot
 			
-            function Lex(_str:String,_undot=false){
+            public function Lex(_str:String,_undot=false){
                   ptr=0;
 				  undot=_undot;
 				  line=0;
 				  lines=[];
-				  _str=_str.replace(/\r/g,"");//\r不是换行,不过如果存在的话，是个问题
+				  _str=_str.replace(/\r\n/g,"\n");//\r不是换行,不过如果存在的话，是个问题
+				  _str=_str.replace(/\r/g,"\n");//\r不是换行,不过如果存在的话，是个问题
 				  lines=_str.split("\n");
+				  
                   words=[];
                   str=_str;
                   nextChar();
                   //brace=[];
+				  //trace("lines===="+lines.length);
                   while(ptr<str.length+1){
 					  try{
                   			var tk:Token=getNextWord();
+							tk.line=line;
+							tk.index=words.length;
+							tk.linestr=lines[line];
 					  }catch(e){
 						  trace(e);
 					  }
                     if(tk){
-	                 	// trace(tk,tk.word,words.length);
-                    	if(tk.type==TokenType.keyimport){
-							//tk.word=="import"
-                    		//将之后的字符串处理了,作为API的成员
-							 words.push(tk);
-                    		 tk=getNextWord();
-							 words.push(tk);
-                    		 if(tk.type==TokenType.ident){
-                    		 	var vname_arr:Array=tk.value;
-                    		 }else{
-								 parseError("导入的类不存在="+tk.word);
-                    		 }
-                    		 continue;
-                    	}
                     	words.push(tk);
                     }
                   }
+				//  trace("end lines===="+line);
             }
 	        private function skipIgnored():void {
 				skipWhite();
-				skipComments();
-				skipWhite();
-				skipComments();
-				skipWhite();
+				var c=0;
+				while(skipComments() && c<40){
+					c++;
+					skipWhite();
+				}
+				//skipWhite();
 			}
 			
 			/**
@@ -96,7 +89,8 @@ package parse {
 			 * single-line or multi-line.  Advances the character
 			 * to the first position after the end of the comment.
 			 */
-			private function skipComments():void {
+			private function skipComments():Boolean {
+				var re=false;
 				var br:Boolean=false;
 				while ( ch == '/' ) {
 					// Advance past the first / to find out what type of comment
@@ -113,7 +107,8 @@ package parse {
 								nextChar();
 							}
 							if(ch=='\n'){
-								line++;
+								re=true;
+								//line++;
 							}
 							break;
 						
@@ -124,6 +119,7 @@ package parse {
 								if ( ch == '*' ) {
 									// check to see if we have a closing /
 									nextChar();
+									re=true;
 									if ( ch == '/') {
 										// move past the end of the closing */
 										nextChar();
@@ -131,6 +127,9 @@ package parse {
 									}
 								} else {
 									// move along, looking if the next character is a *
+									if(ch=="\n"){
+										line++;
+									}
 									nextChar();
 								}
 								// when we're here we've read past the end of 
@@ -151,6 +150,7 @@ package parse {
 							//parseError( "Unexpected " + ch + " encountered (expecting '/' or '*' )" );
 					}
 				}
+				return re;
 			}
 			
 			/**
@@ -407,8 +407,8 @@ package parse {
 							//数字
 							word=ch;
 							nextChar();
-							if(ch=="x"){
-								//16进制数
+							if(ch=="x" && word=="0"){
+								//无符号的16进制数
 								nextChar();
 								word="";
 								while (isDigit(ch) || (ch>='a' && ch<='f')|| (ch>='A' && ch<='F')) {
@@ -445,7 +445,7 @@ package parse {
 							word=ch;
 							nextChar();
 							//  || ch == '.'
-							while (isAlpha(ch) || isDigit(ch) || ch == '_' || ch == '/') {
+							while (isAlpha(ch) || isDigit(ch) || ch == '_') {// || ch == '/'
 								word+=ch;
 								nextChar();
 							}
@@ -477,10 +477,12 @@ package parse {
 									token.type=TokenType.ident;
 								}
 							}
-						}else if ( ch == '' ) {
+						}
+						else if ( ch == '' ) {
 							// check for reading past the end of the string
 							return null;
-						} else {
+						}
+						else {
 							// not sure what was in the input string - it's not
 							// anything we expected
 							parseError(this.ptr+ "Unexpected " + str.substr(this.ptr) + " encountered" );
@@ -593,7 +595,7 @@ package parse {
               return false;
             }
 		private function parseError( message:String ):void {
-			throw new Error("词法分析出错:"+message+"当前位置="+ ptr);
+			throw new Error(this.lines[this.line]+"词法分析出错:"+message+"当前位置="+ ptr);
 		}
       }
 }

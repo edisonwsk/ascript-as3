@@ -38,8 +38,9 @@ package parser
 	import parser.GNode;
 	import parser.GNodeType;
 	import parser.GenTree;
-	//
+	//注意事项，如果要用那个_super，仅限_super的类为动态的。
 	dynamic public class DY extends Proxy{
+		//
 		private var __rootnode:GenTree;
 		private var _classname:String;
 		private var __vars:Object;//local_vars的堆栈顶
@@ -51,8 +52,10 @@ package parser
 			__rootnode=GenTree.Branch[clname];
 			local_vars=[];
 			__API=GenTree.Branch[clname].API;
+			
+			
 			__API._root=Script._root;
-			__API.stage=Script._root.stage;
+			//__API.stage=Script._root.stage;
 			for(var o in Script.defaults){
 				__API[o]=Script.defaults[o];
 			}
@@ -61,12 +64,19 @@ package parser
 		}
 		//
 		override flash_proxy function callProperty(methodName:*, ... args):* {
+			if(methodName is QName){
+				methodName=(methodName as QName).localName;
+			}
 			if(__rootnode.motheds[methodName]){
 				var f:Function=ProxyFunc.getAFunc(this,methodName);
-				return f.apply(this,args);
-			}else if(_super[methodName] is Function){
+				if(f){
+					return f.apply(this,args);
+				}
+			}
+			if(_super[methodName] is Function){
 				return callLocalFunc(_super,methodName,args);
 			}
+			
 			executeError(_classname+">SUPER "+_super+">不存在此方法="+methodName);
 			return null;
 		}
@@ -100,6 +110,20 @@ package parser
 			}
 		}
 		var isret:Boolean=false;//函数调用是否返回
+		var jumpstates:Array=[0];//循环的当前状态
+		//0.不跳出，1，跳出，2跳到下一次
+		private function get  jumpstate():int{
+			return jumpstates[jumpstates.length-1];
+		}
+		private function set  jumpstate(v:int){
+			jumpstates[jumpstates.length-1]=v;
+		}
+		public function pushstate(){
+			jumpstates.push(0);
+		}
+		public function popstate(){
+			jumpstates.pop();
+		}
 		public function call(funcname:String,explist:Array){
 			var re=null;
 			try{
@@ -127,8 +151,7 @@ package parser
 					executeError(_classname+"的方法:"+funcname+" 未定义");
 				}
 			}catch(e:Error){
-				trace(funcname+explist);
-				executeError(e.toString());
+				executeError("调用>"+this._classname+"类的"+funcname+explist+"出错>\r"+e.getStackTrace());//e.message+"\r"+
 			}
 			return re;
 		}
@@ -156,9 +179,19 @@ package parser
 			*/
 			if(node.nodeType==GNodeType.Stms){
 				for(var i:int=0;i<node.childs.length;i++){
-					var re:Object=executeST(node.childs[i]);
+					//try{
+						var re:Object=executeST(node.childs[i]);
+						
+					//}catch(e:Error){
+						//e.message+="提示:"+(node.childs[i] as GNode).toString();
+						//throw(e);
+						//trace(e);
+					//}
 					if(isret){
 						return re;
+					}
+					if(jumpstate>0){
+						return;
 					}
 				}
 			}else if(node.nodeType==GNodeType.AssignStm){
@@ -178,6 +211,10 @@ package parser
 					}
 				}
 				//
+				/*if(lvarr[1]=="index"){
+					trace((node.childs[1] as GNode).toString());
+				}
+				*/
 				var rvalue=getValue(node.childs[1]);//右侧取值
 				
 				var lv=lvarr[0];
@@ -218,6 +255,9 @@ package parser
 							if(isret){
 								return re;
 							}
+							if(jumpstate>0){
+								return;
+							}
 							break;
 						}
 					}else{
@@ -225,6 +265,54 @@ package parser
 						var re=executeST(cn);
 						if(isret){
 							return re;
+						}
+						if(jumpstate>0){
+							return;
+						}
+					}
+				}
+			}else if(node.nodeType==GNodeType.SWITCH){
+				var exp=getValue(node.childs[0]);
+				var jump=false;
+				var isbreak=true;
+				for(var i:int=1;i<node.childs.length;i++){
+					if(jump){
+						break;
+					}
+					var cn:GNode=node.childs[i];
+					
+					if(cn.nodeType==GNodeType.CASE){
+						//trace(cn.childs[0].toString());
+						if(isbreak==false ||(isbreak && exp==getValue(cn.childs[0]))){
+							//
+							isbreak=false;
+							//
+							for(var j:int=1;j<cn.childs.length;j++){
+								if((cn.childs[j] as GNode).nodeType==GNodeType.BREAK){
+									jump=true;
+									isbreak=true;
+									break;
+								}else{
+									
+									var re=executeST(cn.childs[j]);
+									if(isret){
+										return re;
+									}
+								}
+							}
+						}
+					}else if(cn.nodeType==GNodeType.DEFAULT){
+						//stlist
+						for(var j:int=0;j<cn.childs.length;j++){
+							if((cn.childs[j] as GNode).nodeType==GNodeType.BREAK){
+								jump=true;
+								break;
+							}else{
+								var re=executeST(cn.childs[j]);
+								if(isret){
+									return re;
+								}
+							}
 						}
 					}
 				}
@@ -262,47 +350,91 @@ package parser
 					var re=getValue(node.childs[0]);
 					isret=true;
 					return re;
+				}else{
+					isret=true;
+					return undefined;
 				}
+			}else if(node.nodeType==GNodeType.CONTINUE){
+				//应该跳过下面的执行。
+				jumpstate=2;
+			}else if(node.nodeType==GNodeType.BREAK){
+					//应该跳出循环
+				jumpstate=1;
 			}else if(node.nodeType==GNodeType.FunCall){
-				
 				getValue(node);
 			}else if(node.nodeType==GNodeType.WhileStm){
-				while(getValue(node.childs[0])){
-					var re=executeST(node.childs[1]);
-					if(isret){
-						return re;
+				pushstate();
+				try{
+					while(getValue(node.childs[0])){
+						var re=executeST(node.childs[1]);
+						if(isret){
+							return re;
+						}
+						if(jumpstate==1){
+							break;//否则继续执行
+						}
+						jumpstate=0;//恢复为0
 					}
+				}finally{
+					popstate();
 				}
 			}else if(node.nodeType==GNodeType.ForStm){
 				var exp1=executeST(node.childs[0]);
 				//var exp2;
-				while(getValue(node.childs[1])){
-					var re=executeST(node.childs[3]);//进行for内部的处理
-					if(isret){
-						return re;
+				pushstate();
+				try{
+					while(getValue(node.childs[1])){
+						var re=executeST(node.childs[3]);//进行for内部的处理
+						if(isret){
+							return re;
+						}
+						if(jumpstate==1){
+							break;//否则继续执行
+						}
+						jumpstate=0;//恢复为0
+						executeST(node.childs[2]);//
 					}
-					executeST(node.childs[2]);//
+				}finally{
+					popstate();
 				}
 			}else if(node.nodeType==GNodeType.ForInStm){
 				var varname=node.childs[0].word;
 				var obj:Object=getValue(node.childs[1]);
 				//
-				for(var o in obj){
-					__vars[varname]=o;
-					var re=executeST(node.childs[2]);//
-					if(isret){
-						return re;
+				pushstate();
+				try{
+					for(var o in obj){
+						__vars[varname]=o;
+						var re=executeST(node.childs[2]);//
+						if(isret){
+							return re;
+						}
+						if(jumpstate==1){
+							break;//否则继续执行
+						}
+						jumpstate=0;//恢复为0
 					}
+				}finally{
+					popstate();
 				}
 			}else if(node.nodeType==GNodeType.ForEACHStm){
 				var varname=node.childs[0].word;
 				var obj:Object=getValue(node.childs[1]);
-				for each(var o in obj){
-					__vars[varname]=o;
-					var re=executeST(node.childs[2]);//
-					if(isret){
-						return re;
+				pushstate();
+				try{
+					for each(var o in obj){
+						__vars[varname]=o;
+						var re=executeST(node.childs[2]);//
+						if(isret){
+							return re;
+						}
+						if(jumpstate==1){
+							break;//否则继续执行
+						}
+						jumpstate=0;//恢复为0
 					}
+				}finally{
+					popstate();
 				}
 			}
 			else if(node.nodeType==GNodeType.importStm){
@@ -315,6 +447,7 @@ package parser
 			if(node.gtype== GNodeType.IDENT){
 				//取得左值，其实就是取得scope,vname
 				var var_arr:Array=[];
+				
 				for(var i:int=0;i<node.childs.length;i++){
 					if(node.childs[i].nodeType==GNodeType.Index){//索引
 						var_arr.push(getValue(node.childs[i].childs[0]));
@@ -323,6 +456,7 @@ package parser
 					}
 				}
 				var vname:String=var_arr[0];
+				
 				//
 				var scope=null;
 				var bottem:int=0;
@@ -340,13 +474,17 @@ package parser
 						scope=this;
 					}else if(__API[vname]){
 							scope=__API;
-					}else if(Script._root.loaderInfo.applicationDomain.hasDefinition(vname)){
+					}else if(Script._root && Script._root.loaderInfo.applicationDomain.hasDefinition(vname)){
 						scope=Script.getDef(vname);// as Class;
 						bottem=1;
 					}
 				}
+				if(!scope){
+					scope=__vars;
+				}
 				//作用域有效
 				var v=scope;
+				
 				if(v){
 					if(var_arr.length<bottem){
 						return [v];
@@ -362,10 +500,10 @@ package parser
 						return [v,lastv];
 					}
 				}
-				executeError("无法找到变量的定义="+var_arr);
 			}
 			return [];
 		}
+		
 		public function getValue(node:GNode){
 			switch(node.nodeType){
 				case GNodeType.IDENT:
@@ -381,9 +519,12 @@ package parser
 							return ProxyFunc.getAFunc(this,vname);
 						}else if(__API[vname]!=undefined){
 							return __API[vname];
+						}else if(vname=="this"){
+							return this;
 						}
 					}
 					var arr:Array=getLValue(node);
+					
 					if(arr.length==2){
 						//没有属性
 						if(arr[0][arr[1]]!=undefined){
@@ -424,11 +565,17 @@ package parser
 					break;
 				case GNodeType.LOP:
 					var v1=getValue(node.childs[0]);
-					var v2=getValue(node.childs[1]);
 					if(node.word=="||" || node.word=="or"){
-						return v1 || v2;
+						//var v2=;
+						if(v1){
+							return true;//如果已经为true，不需要进行后面的计算
+						}
+						return v1 || getValue(node.childs[1]);
 					}else if(node.word=="&&"|| node.word=="and"){
-						return v1 && v2;
+						if(!v1){
+							return false;
+						}
+						return v1 && getValue(node.childs[1]);
 					}
 					break;
 				case GNodeType.LOPNot:
@@ -478,8 +625,12 @@ package parser
 						return v1>v2;
 					}else if(node.word=="<"){
 						return v1<v2;
+					}else if(node.word=="<="){
+						return v1<=v2;
 					}else if(node.word=="=="){
 						return v1==v2;
+					}else if(node.word==">="){
+						return v1>=v2;
 					}else if(node.word=="!="){
 						return v1!=v2;
 					}
@@ -527,9 +678,9 @@ package parser
 						var re;
 						return newLocalClass(c,explist);
 					}else{
-						if(GenTree.Branch[identnode.word]){
+						if(GenTree.hasScript(identnode.word)){
 							re=new DY(identnode.word,explist);
-							//Debug.log("成功创建脚本类="+re.classname+"的实例");
+							trace("成功创建脚本类="+identnode.word+"的实例");
 							return re;
 						}else{
 							trace("脚本类="+identnode.word+"尚未定义");
@@ -570,7 +721,8 @@ package parser
 							if(_super[vname] is Function){
 								return callLocalFunc(_super,vname,explist);
 							}else if(Script.defaults[vname] is Function){
-								(Script.defaults[vname] as Function).apply(null,explist);
+								return (Script.defaults[vname] as Function).apply(null,explist);
+								//
 							}else if(__rootnode.motheds[vname]==undefined){
 								if(Script.__globaldy._rootnode.motheds[vname]==undefined){
 									//自身不存在该方法
@@ -629,6 +781,9 @@ package parser
 					for(var i:int=bottom;i<vname_arr.length-1;i++){
 						scope=scope[vname_arr[i]];
 					}
+					/*if(scope==null){
+						executeError("未定义方法="+vname);
+					}*/
 					var lastvname:String=vname_arr[vname_arr.length-1];
 					//trace(scope,scope is Iterpret);
 					if(scope is DY){
@@ -644,7 +799,10 @@ package parser
 			}
 		}
 		private function callLocalFunc(scope:Object,vname:String,explist:Array){
-			return (scope[vname] as Function).apply(scope,explist);
+			if(scope[vname] is Function){
+				return (scope[vname] as Function).apply(scope,explist);
+			}
+			throw new Error(scope+"不存在"+vname+"方法");
 		}
 		private function newLocalClass(c:Class,explist:Array){//vname,
 			var re;
@@ -678,12 +836,13 @@ package parser
 					re=new c(explist[0],explist[1],explist[2],explist[3],explist[4],explist[5],explist[6],explist[7]);
 					break;
 				default:
-					executeError("解析出错=未知的语句");
+					executeError("解析出错=未知的语句"+c+">"+explist);
 			}
 			return re;
 		}
 		private function executeError(str:String){
-			trace("executeError="+str);
+			
+			Script.Debug.log("executeError="+str);
 		}
 	}
 }
