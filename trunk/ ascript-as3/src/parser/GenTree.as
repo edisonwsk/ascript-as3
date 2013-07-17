@@ -54,34 +54,7 @@ package parser
 		public var fields:Object={};
 		
 		public var Package:String="";
-		//
-		public static  function get isMobile():Boolean
-		{
-			return Capabilities.manufacturer.indexOf('Android') > -1 || Capabilities.manufacturer.indexOf('iOS') > -1;
-		}
-		
 		static public function hasScript(scname:String):Boolean{
-			CONFIG::air{
-				if(!Branch[scname]){
-					if(isMobile){
-						var f:File=new File(Script.vm.assetdir+"panel/"+scname+".as");
-					}else{
-						f=File.applicationDirectory.resolvePath("asset/panel/"+scname+".as");
-					}
-					
-					if(f.exists){
-						//解析
-						var fs:FileStream=new FileStream();
-						fs.open(f,FileMode.READ);
-						var str=fs.readUTFBytes(f.size);
-						fs.close();
-						trace("load=="+scname);
-						Script.LoadFromString(str);
-					}else{
-						trace(scname+"不存在");
-					}
-				}
-			}
 			if(Branch[scname]){
 				
 				return true;
