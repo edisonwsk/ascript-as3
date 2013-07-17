@@ -1,4 +1,5 @@
 #summary AScript入门
+#labels Featured
 
 = AScript起航 =
 
