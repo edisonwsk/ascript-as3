@@ -45,7 +45,7 @@ package parser
 	
 	import parse.Lex;
 	import parse.ProxyFunc;
-
+	
 	public class Script
 	{
 		static var ____globalclass:GenTree;
@@ -89,8 +89,8 @@ package parser
 			_root=r;
 			app=r.loaderInfo.applicationDomain;
 		}
-		static public function init(code:String=null){
-			
+		static public function init(docRoot:Sprite,code:String=null){
+			root=docRoot;
 			Debug=getDef("Debug");
 			DY.prototype.toString=function():String{
 				return "这是一个脚本类";
@@ -111,12 +111,12 @@ package parser
 			newScript("__DY");//基本类
 			//
 			/*if(!code){
-				trace(<![CDATA[
-					欢迎您体验Ascript1.0,这个脚本语言专门为as3打造。
-					开发者:dayu,如果遇到任何bug以及疑问请联系我
-					email:zuwuneng@yahoo.com.cn
-					qq:32932813
-					]]>);
+			trace(<![CDATA[
+			欢迎您体验Ascript1.0,这个脚本语言专门为as3打造。
+			开发者:dayu,如果遇到任何bug以及疑问请联系我
+			email:zuwuneng@yahoo.com.cn
+			qq:32932813
+			]]>);
 			}*/
 		}
 		/**
@@ -197,9 +197,9 @@ package parser
 				return __globaldy.executeST(cnode);
 				/*
 				if(cnode.nodeType==GNodeType.AssignStm){
-					__globaldy[cnode.childs[0].word]=__globaldy.getValue(cnode.childs[1]);
+				__globaldy[cnode.childs[0].word]=__globaldy.getValue(cnode.childs[1]);
 				}else if(cnode.nodeType==GNodeType.VarDecl){
-					__globaldy[cnode.childs[0].word]=__globaldy.getValue(cnode.childs[1]);
+				__globaldy[cnode.childs[0].word]=__globaldy.getValue(cnode.childs[1]);
 				}*/
 			}
 		}
@@ -328,16 +328,16 @@ package parser
 						//对汉字或者特殊字符进行unicode编码
 						// check for a control character and escape as unicode
 						if ( ch < ' ' ) {
-							// get the hex digit(s) of the character (either 1 or 2 digits)
-							var hexCode:String = ch.charCodeAt( 0 ).toString( 16 );
-							// ensure that there are 4 digits by adjusting
-							// the # of zeros accordingly.
-							var zeroPad:String = hexCode.length == 2 ? "00" : "000";
-							// create the unicode escape sequence with 4 hex digits
-							s += "\\u" + zeroPad + hexCode;
+						// get the hex digit(s) of the character (either 1 or 2 digits)
+						var hexCode:String = ch.charCodeAt( 0 ).toString( 16 );
+						// ensure that there are 4 digits by adjusting
+						// the # of zeros accordingly.
+						var zeroPad:String = hexCode.length == 2 ? "00" : "000";
+						// create the unicode escape sequence with 4 hex digits
+						s += "\\u" + zeroPad + hexCode;
 						} else {
-							// no need to do any special encoding, just pass-through
-							s += ch;
+						// no need to do any special encoding, just pass-through
+						s += ch;
 						}*/
 				}	// end switch
 				
