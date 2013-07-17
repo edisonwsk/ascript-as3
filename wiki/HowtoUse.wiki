@@ -5,10 +5,9 @@
 
 使用AScript仅需要简单的几个步骤。
  # 将ascript.swc包含到项目库路径。
- # 通过以下代码初始化脚本引擎。注意`Script._root`需要指向文档类实例。
+ # 通过以下代码初始化脚本引擎。注意参数`root`需要指向文档类实例。
 {{{
-Script.init();
-Script._root=this;
+Script.init(root:Sprite);
 }}}
 我们推荐您使用AScript2.0版本，因为AScript1.2版本存在一些问题。
 如果您想采用1.2版本，具体帮助请参考http://ascript.softplat.com/
