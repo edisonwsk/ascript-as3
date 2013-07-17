@@ -10,5 +10,7 @@
 Script.init();
 Script._root=this;
 }}}
+我们推荐您使用AScript2.0版本，因为AScript1.2版本存在一些问题。
+如果您想采用1.2版本，具体帮助请参考http://ascript.softplat.com/
 至此您可以开始体验AScript的各种特性。
 更多内容请访问APIReference
