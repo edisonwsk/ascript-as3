@@ -7,7 +7,11 @@ AScript的使用非常简单，因为它和ActionScript几乎完全一样。让�
 = AScript定义函数 =
 下面的例子定义了一个AScript函数Add，并在ActionScript中调用它。
 {{{
-Script.declare("function Add(a,b){return a+b;}");
+Script.declare("
+function Add(a,b){
+return a+b;
+}
+");
 var func:Function=Script.getFunc("Add");
 trace(func(200,200));//将输出400
 }}}
