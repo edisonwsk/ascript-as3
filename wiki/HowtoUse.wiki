@@ -18,6 +18,11 @@ Script.init(root);
 }}}
 我们推荐您使用AScript2.0版本，因为AScript1.2版本存在一些问题。
 如果您想采用1.2版本，具体帮助请参考http://ascript.softplat.com/
-
+= 执行AScript代码 =
+ascript的执行需要依赖as。让我们通过FlashBuilder来示范一个例子。
+我们先写一行非常简单的AScript代码。谨记AScript和ActionScript非常相似。
+{{{
+trace("I am AScript!!!");
+}}}
 至此您可以开始体验AScript的各种特性。
 更多内容请访问APIReference
