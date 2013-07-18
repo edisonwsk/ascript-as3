@@ -24,5 +24,9 @@ ascript的执行需要依赖as。让我们通过FlashBuilder来示范一个例�
 {{{
 trace("I am AScript!!!");
 }}}
+想要执行这行代码，需要将这行代码变为String类型的字符串，然后通过Script.execute方法执行。
+{{{
+Script.execute("trace('I am AScript!!!');");
+}}}
 至此您可以开始体验AScript的各种特性。
 更多内容请访问APIReference
