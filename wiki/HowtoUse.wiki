@@ -20,13 +20,14 @@ Script.init(root);
 如果您想采用1.2版本，具体帮助请参考http://ascript.softplat.com/
 = 执行AScript代码 =
 ascript的执行需要依赖as。让我们通过FlashBuilder来示范一个例子。
-我们先写一行非常简单的AScript代码。谨记AScript和ActionScript非常相似。
+我们先写一行非常简单的AScript代码。谨记AScript和ActionScript非常相似。比如下面的代码，和ActionScript一模一样。
 {{{
 trace("I am AScript!!!");
 }}}
-想要执行这行代码，需要将这行代码变为String类型的字符串，然后通过Script.execute方法执行。
+想要执行这行代码，需要将这行代码变为String类型的字符串，然后在含有AScript.swc的项目内通过Script.execute方法执行。
 {{{
 Script.execute("trace('I am AScript!!!');");
 }}}
+可以在output窗口看到trace语句执行的结果，输出了一段话I am AScript!!!。
 至此您可以开始体验AScript的各种特性。
 更多内容请访问APIReference
