@@ -1,4 +1,4 @@
-#summary 如何配置AScript
+#summary 如何配置AScript，并通过一个简短的例子带您进入AScript的世界
 #labels Phase-Deploy,Featured
 
 = 使用AScript前的准备 =
