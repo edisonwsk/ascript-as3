@@ -4,7 +4,7 @@
 = AScript起航 =
 
 AScript的使用非常简单，因为它和ActionScript几乎完全一样，并且运行于as上。
-关于如何运行AScript，请参考HowtoUse。
+关于如何运行AScript和初始化脚本引擎，请参考HowtoUse。
 == 变量 ==
 AScript的变量声明方式如下
 {{{
@@ -17,11 +17,10 @@ var aaa:int=2;
 AScript会自动忽略冒号后面的类型。虽然AScript不会对代码进行类型检查，但是仍然建议您写上变量的类型，由于AScript和as几乎一摸一样，所以通常情况下可以使用flash builder或其他ide书写代码，写上变量的类型可以减少警告，并可以利用ide的类型检查进行一定程度上的检查。
 
 == 函数 ==
-下面的例子定义了一个AScript函数Add，并在ActionScript中调用它。我们假设你已经调用了Script.init方法初始化脚本引擎。关于初始化脚本引擎，可以参考HowtoUse。
+下面的例子定义了一个AScript函数Add，并在ActionScript中调用它。
 {{{
 Script.declare("function Add(a,b){return a+b;}");
 var func:Function=Script.getFunc("Add");
 trace(func(200,200));//将输出400
 }}}
-其中字符串部分function Add(a,b){return a+b;}就是真正的AScript代码。
 == 类 ==
