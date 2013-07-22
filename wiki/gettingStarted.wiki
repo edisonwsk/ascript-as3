@@ -3,8 +3,10 @@
 
 = AScript起航 =
 
-AScript的使用非常简单，因为它和ActionScript几乎完全一样，并且运行于as上。让我们从一个简单的例子开始。
-= AScript定义函数 =
+AScript的使用非常简单，因为它和ActionScript几乎完全一样，并且运行于as上。
+关于如何运行AScript，请参考HowtoUse。
+== 变量 ==
+== 函数 ==
 下面的例子定义了一个AScript函数Add，并在ActionScript中调用它。我们假设你已经调用了Script.init方法初始化脚本引擎。关于初始化脚本引擎，可以参考HowtoUse。
 {{{
 Script.declare("function Add(a,b){return a+b;}");
@@ -12,3 +14,4 @@ var func:Function=Script.getFunc("Add");
 trace(func(200,200));//将输出400
 }}}
 其中字符串部分function Add(a,b){return a+b;}就是真正的AScript代码。
+== 类 ==
