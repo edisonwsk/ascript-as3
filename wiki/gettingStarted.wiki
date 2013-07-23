@@ -24,10 +24,21 @@ Script.execute("trace(aaa);");//输出为12
 }}}
 和as一样局部变量如果和全局变量重名会优先调用局部变量。
 {{{
-Script.init(this);
 Script.vm.aaa=12;
 Script.execute("var aaa:int=2;trace(aaa);");//输出为2
 }}}
+还有一种特殊的方式可以创建全局变量。Script.init接受的第二个可选参数是一个AScript类文件（关于AScript的类的详细信息可以参考本章余下的章节）。脚本引擎初始化的时候会自动创建该类的实例，并且将Script.vm指向这个类的实例。在类中定义的变量也就成了全局变量。
+{{{
+Script.init(this,"class Cla{var aaa=12}");
+Script.execute("trace(aaa);");//输出12
+trace(Script.vm.aaa);//输出12
+}}}
+运行上面的代码，可以在output窗口看到一段描述文字，如下：
+{{{
+脚本类:Cla解析完成,可以创建其实例了
+脚本类:__DY解析完成,可以创建其实例了
+}}}
+这表示脚本引擎的初始化。
 == 函数 ==
 下面的例子定义了一个AScript函数Add，并在ActionScript中调用它。
 {{{
@@ -36,3 +47,13 @@ var func:Function=Script.getFunc("Add");
 trace(func(200,200));//将输出400
 }}}
 == 类 ==
+AScript的特色之一是可以定义类。并且定义类的方式和as3非常相似。
+下面的代码定义了一个AScript类。
+{{{
+class Cla{
+   var aaa=12;
+   function Add(){
+      aaa++;
+   }
+}
+}}}
