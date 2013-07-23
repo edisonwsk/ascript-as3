@@ -6,6 +6,7 @@
 AScript的使用非常简单，因为它和ActionScript几乎完全一样，并且运行于as上。
 关于如何运行AScript和初始化脚本引擎，请参考HowtoUse。
 == 变量 ==
+===局部变量===
 AScript的变量声明方式如下
 {{{
 var aaa=2;
@@ -15,7 +16,18 @@ AScript本身是不对变量类型进行检查的，但是可以在声明变量�
 var aaa:int=2;
 }}}
 AScript会自动忽略冒号后面的类型。虽然AScript不会对代码进行类型检查，但是仍然建议您写上变量的类型，由于AScript和as几乎一摸一样，所以通常情况下可以使用flash builder或其他ide书写代码，写上变量的类型可以减少警告，并可以利用ide的类型检查进行一定程度上的检查。
-
+=== 全局变量 ===
+可以在as3的代码中指定全局变量，然后在AScript里调用。如下：
+{{{
+Script.vm.aaa=12;
+Script.execute("trace(aaa);");//输出为12
+}}}
+和as一样局部变量如果和全局变量重名会优先调用局部变量。
+{{{
+Script.init(this);
+Script.vm.aaa=12;
+Script.execute("var aaa:int=2;trace(aaa);");//输出为2
+}}}
 == 函数 ==
 下面的例子定义了一个AScript函数Add，并在ActionScript中调用它。
 {{{
