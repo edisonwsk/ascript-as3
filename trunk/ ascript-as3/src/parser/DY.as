@@ -123,7 +123,9 @@ package parser
 			var re=null;
 			try{
 				var node:GNode=__rootnode.motheds[funcname];
-				
+				if(funcname=="onAdded"){
+					trace(1);
+				}
 				if(node && node.nodeType==GNodeType.FunDecl){
 					var tisret=isret;
 					isret=false;
