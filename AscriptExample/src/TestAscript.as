@@ -48,10 +48,10 @@ package
 			//是的，你会看到脚本的效率并不低
 			
 			//接下来我们测试下最热的starling
-			teststarling();
+			starling();
 		}
 		private var mStarling:Starling;
-		public function teststarling(){
+		public function starling(){
 			stage.align = StageAlign.TOP_LEFT;
 			
 			stage.scaleMode = StageScaleMode.NO_SCALE;   
