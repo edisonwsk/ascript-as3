@@ -1,0 +1,41 @@
+package
+{
+	import com.greensock.TweenLite;
+	import com.greensock.easing.Linear;
+	
+	import flash.display.Sprite;
+	import flash.events.Event;
+	import flash.utils.getTimer;
+	
+	import parser.Script;
+	
+	public class TestAscript extends Sprite
+	{
+		public function TestAscript()
+		{
+			//初始化脚本环境,
+			Script.init(this,null);
+			//所有script目录下的as文件为ascript脚本文件和as3文件基本兼容，因此你可以用as3的编辑器进行书写
+			//享受充分的语法提示
+			//然而当你需要对其按脚本运行的时候,你必须将其copy到发布目录下,如 bin-debug
+			//因为新版的ascript类库兼容脚本的动态加载，使用了文件系统,
+			//需要引入air类库，同时定义编译参数:-define=CONFIG::air,true
+			
+			//------------以下为测试
+			//新建一个脚本类,返回一个脚本类的实例对象p
+			var p=Script.New("ClassA");
+			var t=getTimer();
+			trace(p.a(100));//100次的递归函数调用
+			trace("耗时="+(getTimer()-t));//耗时计算
+			//
+			TweenLite.defaultEase=Linear.easeNone;
+			//测试显示对象+TweenLite;
+			
+			//创建100个随机运动的小球
+			for(var i=0;i<100;i++){
+				Script.New("TestTweenLite",this);
+			}
+			//是的，你会看到脚本的效率并不低
+		}
+	}
+}
