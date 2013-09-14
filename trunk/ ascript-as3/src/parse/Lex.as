@@ -45,7 +45,8 @@ package parse {
 			static public var treecach:Dictionary=new Dictionary();
 			private var undot:Boolean=false;//是否忽略dot
 			
-            public function Lex(_str:String,_undot=false){
+            public function Lex(_str:String=null,_undot=false){
+				if(_str){
                   ptr=0;
 				  undot=_undot;
 				  line=0;
@@ -66,13 +67,13 @@ package parse {
 							tk.index=words.length;
 							tk.linestr=lines[line];
 					  }catch(e){
-						  trace(e);
+						  trace("词法分析"+e);
 					  }
                     if(tk){
                     	words.push(tk);
                     }
                   }
-				//  trace("end lines===="+line);
+				}
             }
 	        private function skipIgnored():void {
 				skipWhite();
@@ -456,9 +457,15 @@ package parse {
 							token.value=word.split('.');
 							//trace(token.value);
 							if(Token.wordpatten.indexOf("|"+word+"|")>=0){
-								token.type=TokenType["key"+word];
-								if(word=="new"){
-									loadnew=true;
+								if(word=="as" || word=="is" ||  word=="in" || word=="instanceof"){//关系运算符(比较运算符)
+									token.type=TokenType.COP;
+									token.word=word;
+									//
+								}else{
+									token.type=TokenType["key"+word];
+									if(word=="new"){
+										loadnew=true;
+									}
 								}
 							}else{
 								if(token.word=="false"){

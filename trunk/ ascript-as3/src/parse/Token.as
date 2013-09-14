@@ -32,16 +32,19 @@ package parse {
 	 * 是作为解释器而写的，不同于编译器。。。。
 	 */
 	public class Token {
-		public var type:TokenType;//
+		public var type:int;//
 		public var value:*;//当类型为常量，则为其值
 					//当类型为ident和操作符或界符，则为其单词
 					//当类型为关键字，则为其单词，
 		public var word:String;
 		public var line:int=0;
-		public var linestr:String="";
+		internal var linestr:String="";
+		public function getLine():String{
+			return linestr;
+		}
 		public var index:int;
 		//
-		public static var wordpatten:String="|extends|in|package|for|var|new|class|function|if|else|while|return|import|public|private|protected|switch|case|break|continue|default|try|catch|finally|each|";
+		public static var wordpatten:String="|as|is|instanceof|extends|in|package|for|var|new|class|function|if|else|while|return|import|public|private|protected|switch|case|break|continue|default|try|catch|finally|each|";
 		public function Token(){
 		}
 		static public function iskeyword(str:String){
