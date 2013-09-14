@@ -21,13 +21,18 @@ package
 		private var mRenderTexture:RenderTexture; 
 		private var mBrush:Image; 
 		var teststarling;
-		//
 		public function StarlingRoot() 
 		{ 
 			//as3执行模式
-			//teststarling=new TestStarling(this);
-			//ascript执行模式
-			teststarling=Script.New("TestStarling",this);
+			var useScript=true;
+			if(useScript){
+				//脚本执行模式,加载的脚本执行
+				teststarling=Script.New("TestStarling",this);
+			}else{
+				//as3编译执行模式
+				teststarling=new TestStarling(this);
+			}
+			
 		}
 		
 	}
