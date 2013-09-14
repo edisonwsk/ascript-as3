@@ -55,6 +55,7 @@ package parse
 		{
 			it=_it;
 			funcname=fn;
+			//为了兼容starling,修改了一下返回函数...分为带1参数和其他，2013.9.14
 			if((_it._rootnode.motheds[fn] as GNode).childs[0].childs.length==1){
 				Func=this.Func1;
 			}else{
