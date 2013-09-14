@@ -18,6 +18,10 @@ package
 	 * 其中用到了Tweenlite,请自行下载并引用该类库
 	 * ascript类库也请自行编译引用
 	 * 因为新版的ascript类库兼容脚本的动态加载，使用了文件系统,需要引入air类库，同时定义编译参数:-define=CONFIG::air,true
+		==>所有script目录下的as文件为可以作为脚本运行和as3文件兼容，
+		 * 因此你可以用as3的编辑器进行书写,享受充分的语法提示
+		注意:当你需要对其按脚本运行的时候,你必须将其复制到发布目录下,如 bin-debug/script
+		 
 	 * @author dayu
 	 * 2013.9.14
 	 */	
@@ -27,9 +31,6 @@ package
 		{
 			//初始化脚本环境,
 			Script.init(this,null);
-			//所有script目录下的as文件为ascript脚本文件和as3文件基本兼容，因此你可以用as3的编辑器进行书写
-			//享受充分的语法提示
-			//然而当你需要对其按脚本运行的时候,你必须将其copy到发布目录下,如 bin-debug
 			//
 			//------------以下为测试
 			//新建一个脚本类,返回一个脚本类的实例对象p
@@ -48,6 +49,7 @@ package
 			//是的，你会看到脚本的效率并不低
 			
 			//接下来我们测试下最热的starling
+			//开启后可以在屏幕上进行绘制
 			starling();
 		}
 		private var mStarling:Starling;
