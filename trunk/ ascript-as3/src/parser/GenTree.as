@@ -54,22 +54,42 @@ package parser
 		public var fields:Object={};
 		
 		public var Package:String="";
+		//
+		
 		static public function hasScript(scname:String):Boolean{
+			CONFIG::air{
+				if(!Branch[scname]){
+					var f:File=File.applicationDirectory.resolvePath(Script.scriptdir+scname+".as");
+					if(f.exists){
+						//解析
+						var fs:FileStream=new FileStream();
+						fs.open(f,FileMode.READ);
+						var str=fs.readUTFBytes(f.size);
+						fs.close();
+						trace("load=="+scname);
+						Script.LoadFromString(str);
+					}else{
+						trace(scname+"不存在");
+					}
+				}
+			}
 			if(Branch[scname]){
 				
 				return true;
 			}
 			return false;
 		}
-		function GenTree(code:String)
+		function GenTree(code:String=null)
 		{
-			lex=new Lex(code);
-			index=0;
-			nextToken();
-			PACKAGE();
-			Branch[name]=this;
-			if(name!="____globalclass"){
-				trace("脚本类:"+name+"解析完成,可以创建其实例了");
+			if(code){
+				lex=new Lex(code);
+				index=0;
+				nextToken();
+				PACKAGE();
+				Branch[name]=this;
+				if(name!="____globalclass"){
+					trace("脚本类:"+name+"解析完成,可以创建其实例了");
+				}
 			}
 		}
 		public function toString():String{
@@ -132,8 +152,6 @@ package parser
 			}
 			return cnode;
 		}
-		
-		//
 		private function doimport():GNode{
 			match(TokenType.keyimport);
 			var vname_arr:Array=[];
@@ -148,6 +166,7 @@ package parser
 			var cnode:GNode=new GNode(GNodeType.importStm);
 			cnode.word=vname_arr.join(".");
 			API[vname_arr[vname_arr.length-1]]=Script.getDef(cnode.word);
+			
 			imports[cnode.word]=true;
 			if(tok.type==TokenType.Semicolon){
 				match(TokenType.Semicolon);
@@ -241,7 +260,8 @@ package parser
 						//如果考虑语法解析的话。。。
 						match(TokenType.Colon);
 						cnode.vartype=tok.word;//变量类型
-						match(TokenType.ident);
+						match(tok.type);//可能为*或者ident
+						//match(TokenType.ident);
 					}
 					cnode.addChild(stlist());
 					return cnode;
@@ -261,7 +281,8 @@ package parser
 						//如果考虑语法解析的话。。。
 						match(TokenType.Colon);
 						cnode.vartype=tok.word;
-						match(TokenType.ident);
+						match(tok.type);
+						//match(TokenType.ident);
 					}
 					while(tok.type==TokenType.COMMA){
 						match(TokenType.COMMA);
@@ -271,7 +292,8 @@ package parser
 							//如果考虑语法解析的话。。。
 							match(TokenType.Colon);
 							cnode.vartype=tok.word;
-							match(TokenType.ident);
+							match(tok.type);	
+							//match(TokenType.ident);
 						}
 					}
 					break;
@@ -333,9 +355,7 @@ package parser
 					break;
 				case TokenType.keyfor:
 					match(TokenType.keyfor);
-					
 					//for each
-					
 					if(tok.type==TokenType.keyeach){
 						match(TokenType.keyeach);
 						match(TokenType.LParent);
@@ -349,9 +369,11 @@ package parser
 							if(tok.type==TokenType.Colon){
 								match(TokenType.Colon);
 								cnode.childs[0].vartype=tok.word;
-								match(TokenType.ident);
+								match(tok.type);
+								//match(TokenType.ident);
 							}
-							match(TokenType.keyin);
+							match(TokenType.COP,"in");
+							
 							cnode.addChild(EXP());
 							match(TokenType.RParent);
 							cnode.addChild(stlist());
@@ -362,7 +384,7 @@ package parser
 						//2种情况，一种是for in
 						//一种是数组循环
 						match(TokenType.LParent);
-						if(lex.words[index+1].type==TokenType.keyin || lex.words[index+2].type==TokenType.keyin){
+						if(lex.words[index+1].type==TokenType.COP || lex.words[index+2].type==TokenType.COP){
 							cnode=new GNode(GNodeType.ForInStm);
 							if(tok.type==TokenType.keyvar){
 								match(TokenType.keyvar);
@@ -370,7 +392,9 @@ package parser
 							if(tok.type==TokenType.ident){
 								cnode.addChild(new GNode(GNodeType.VarDecl,tok));
 								match(TokenType.ident);
-								match(TokenType.keyin);
+								//
+								match(TokenType.COP,"in");
+								
 								cnode.addChild(EXP());
 								match(TokenType.RParent);
 								cnode.addChild(stlist());
@@ -413,7 +437,8 @@ package parser
 							if(tok.type==TokenType.Colon){//如果考虑语法解析的话。。。
 								match(TokenType.Colon);
 								tempnode.vartype=tok.word;
-								match(TokenType.ident);
+								//match(TokenType.ident);
+								match(tok.type);
 							}
 						}else{
 							error();
@@ -565,7 +590,8 @@ package parser
 						//如果考虑语法解析的话。。。
 						match(TokenType.Colon);
 						tnode.vartype=tok.word;//变量类型
-						match(TokenType.ident);
+						match(tok.type);
+						//match(TokenType.ident);
 					}
 					if(tok.type==TokenType.Assign){
 						var cnode:GNode=new GNode(GNodeType.AssignStm,tok);
@@ -953,17 +979,16 @@ package parser
 			tok=this.lex.words[index++] as Token;
 			//index++;
 		}
-		private function match(type:TokenType):void{
+		private function match(type:int,word=null):void{
 			//trace("try eat ",tok.word);
-			if(type==tok.type){
-				//trace("---->eat="+str);x
-				nextToken();
+			if(type==tok.type && (word==null ||  tok.word==word)){
+					nextToken();
 			}else{//匹配失败
 				error();
 			}
 		}
 		private function error():void{
-			throw new Error(this.name+"语法错误>行号:"+tok.line+","+tok.linestr+"，单词："+tok.word);
+			throw new Error(this.name+"语法错误>行号:"+tok.line+","+tok.getLine()+"，单词："+tok.word);
 		}
 	}
 }

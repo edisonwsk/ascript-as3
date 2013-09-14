@@ -27,17 +27,12 @@ http://ascript.softplat.com/
 
 package parser
 {
-	import flash.display.Sprite;
+	import flash.display.Stage;
 	import flash.utils.Proxy;
 	import flash.utils.flash_proxy;
 	
-	import parse.Lex;
 	import parse.ProxyFunc;
-	import parse.TokenType;
-	
-	import parser.GNode;
-	import parser.GNodeType;
-	import parser.GenTree;
+
 	//注意事项，如果要用那个_super，仅限_super的类为动态的。
 	dynamic public class DY extends Proxy{
 		//
@@ -245,6 +240,8 @@ package parser
 				}else if(node.word=="%="){
 					lv[lvarr[lvarr.length-1]]%=rvalue;
 				}
+			}else if(node.nodeType==GNodeType.FunCall){
+				getValue(node);
 			}else if(node.nodeType==GNodeType.IfElseStm){
 				for(var i:int=0;i<node.childs.length;i++){
 					var cn:GNode=node.childs[i];
@@ -360,8 +357,6 @@ package parser
 			}else if(node.nodeType==GNodeType.BREAK){
 					//应该跳出循环
 				jumpstate=1;
-			}else if(node.nodeType==GNodeType.FunCall){
-				getValue(node);
 			}else if(node.nodeType==GNodeType.WhileStm){
 				pushstate();
 				try{
@@ -633,6 +628,18 @@ package parser
 						return v1>=v2;
 					}else if(node.word=="!="){
 						return v1!=v2;
+					}else if(node.word=="is"){
+						return v1 is v2;
+					}else if(node.word=="as"){
+						if(v1 is v2){
+							return v1;
+						}else{
+							return null;
+						}
+					}else if(node.word=="in"){
+						return v1 in v2;
+					}else if(node.word=="instanceof"){
+						return v1 instanceof v2;
 					}
 					break;
 				case GNodeType.newArray:
@@ -706,6 +713,7 @@ package parser
 						for(var i:int=0;i<param.childs.length;i++){
 							explist[i]=getValue(param.childs[i]);
 						}
+						
 					}
 					var vname:String=vname_arr[0];
 					if(vname_arr.length==1){

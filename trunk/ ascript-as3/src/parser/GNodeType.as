@@ -73,8 +73,6 @@ package parser
 		static public var PREINCREMENT:int=38;//++idient语句
 		static public var INCREMENT:int=39;//idient++ --语句
 		
-		
-		
 		//
 		static public var newArray:int=26;//值类型
 		static public var newObject:int=27;//值类型
@@ -84,6 +82,8 @@ package parser
 		static public var newClass:int=17;//值类型
 		static public var ERROR:int=18;
 		static public var importStm:int=19;//语句
+		
+		
 		
 		
 		static var names:Array=["FunDecl","VarDecl","Params","MOP","LOP","COP","Stms","AssignStm","IfElseStm","WhileStm","ForStm","ReturnStm",
