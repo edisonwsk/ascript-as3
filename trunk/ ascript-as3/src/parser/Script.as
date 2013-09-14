@@ -93,7 +93,6 @@ package parser
 		}
 		static public var scriptdir:String="script/";
 		static public function init(__root:Sprite,code:String=null){
-			Debug=getDef("Debug");
 			root=__root;
 			//
 			DY.prototype.toString=function():String{
