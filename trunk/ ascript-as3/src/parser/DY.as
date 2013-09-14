@@ -63,10 +63,12 @@ package parser
 				methodName=(methodName as QName).localName;
 			}
 			if(__rootnode.motheds[methodName]){
+				return this.call(methodName,args);
+				/*
 				var f:Function=ProxyFunc.getAFunc(this,methodName);
 				if(f){
 					return f.apply(this,args);
-				}
+				}*/
 			}
 			if(_super[methodName] is Function){
 				return callLocalFunc(_super,methodName,args);
@@ -123,9 +125,6 @@ package parser
 			var re=null;
 			try{
 				var node:GNode=__rootnode.motheds[funcname];
-				if(funcname=="onAdded"){
-					trace(1);
-				}
 				if(node && node.nodeType==GNodeType.FunDecl){
 					var tisret=isret;
 					isret=false;
