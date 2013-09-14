@@ -8,7 +8,14 @@ package
 	import flash.utils.getTimer;
 	
 	import parser.Script;
-	
+	/**
+	 * 这个例子仅仅是作为acript使用的一个例子
+	 * 其中用到了Tweenlite,请自行下载并引用该类库
+	 * ascript类库也请自行编译引用
+	 * 因为新版的ascript类库兼容脚本的动态加载，使用了文件系统,需要引入air类库，同时定义编译参数:-define=CONFIG::air,true
+	 * @author dayu
+	 * 
+	 */	
 	public class TestAscript extends Sprite
 	{
 		public function TestAscript()
@@ -18,8 +25,7 @@ package
 			//所有script目录下的as文件为ascript脚本文件和as3文件基本兼容，因此你可以用as3的编辑器进行书写
 			//享受充分的语法提示
 			//然而当你需要对其按脚本运行的时候,你必须将其copy到发布目录下,如 bin-debug
-			//因为新版的ascript类库兼容脚本的动态加载，使用了文件系统,
-			//需要引入air类库，同时定义编译参数:-define=CONFIG::air,true
+			//
 			
 			//------------以下为测试
 			//新建一个脚本类,返回一个脚本类的实例对象p
