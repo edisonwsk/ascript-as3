@@ -112,7 +112,7 @@ package parser
 			}else{
 				____globalclass=newScript("____globalclass");
 			}
-			__globaldy=newInstance(____globalclass.name);
+			__globaldy=New(____globalclass.name);
 			vm=__globaldy;
 			//再初始化一个基本类
 			newScript("__DY");//基本类
@@ -166,8 +166,8 @@ package parser
 		 * @param args
 		 * @return 
 		 * 
-		 */		
-		static public function newInstance(...args):DY{
+		 **/
+		static public function New(...args):DY{
 			if(args.length==0){
 				var _name="__DY";//匿名类
 			}else{
@@ -175,15 +175,6 @@ package parser
 			}
 			if(GenTree.hasScript(_name)){
 				return new DY(_name,args);
-			}
-			return null;
-		}
-		
-		static public function New(...args):DY{
-			if(args.length==0){
-				var _name="__DY";//匿名类
-			}else{
-				var _name=args.shift();
 			}
 			return new DY(_name,args);
 		}
