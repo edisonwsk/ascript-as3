@@ -31,24 +31,27 @@ package parser
 
 	public class GNode
 	{
-		public var childs:Array = [];
+		public var childs:Vector.<GNode> = new Vector.<GNode>;
 		public var token:Token;
 		//
 		public var gtype:int;	//GNodeType 
 		public var vartype:String="dynamic";//用于标明变量类型int char float//dynamic
 		public var word:String;
 		public var vis:String="protected";//可见性
-		public function GNode(n:int,v:Token=null)
+		public function GNode(n:int=-1,v:Token=null)
 		{
-			gtype=n;
-			token=v;
-			if(n!=GNodeType.IDENT){
-				if(token){
-					//throw new Error("语法分析错误");
-					word=token.word;
+			if(n>-1){
+				gtype=n;
+				token=v;
+				if(n!=GNodeType.IDENT){
+					if(token){
+						//throw new Error("语法分析错误");
+						word=token.word;
+					}
 				}
 			}
 		}
+			
 		//常量会有
 		public function get value():*{
 			if(token){
