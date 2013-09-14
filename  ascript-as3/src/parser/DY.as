@@ -556,6 +556,10 @@ package parser
 						return uint(v1)|uint(v2);
 					}else if(node.word=="&"){
 						return uint(v1)&uint(v2);
+					}else if(node.word=="<<"){
+						return uint(v1)<<uint(v2);
+					}else if(node.word==">>"){
+						return uint(v1)>>uint(v2);
 					}
 					break;
 				case GNodeType.LOP:

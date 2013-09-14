@@ -277,6 +277,7 @@ package parse {
 							nextChar();
 						}
 						break;
+					
 					case '&':
 						var nc=this.str.charAt(ptr);
 						if(nc=="&"){
@@ -361,6 +362,11 @@ package parse {
 							token.word = ">=";
 							token.value=token.word;
 							nextChar();
+						}else if(ch=='>'){
+							token.type = TokenType.MOP;
+							token.word = ">>";
+							token.value=token.word;
+							nextChar();
 						}else{
 							token.type = TokenType.COP;
 							token.word = ">";
@@ -372,6 +378,11 @@ package parse {
 						if(ch=="="){
 							token.type = TokenType.COP;
 							token.word= "<=";
+							token.value=token.word;
+							nextChar();
+						}else if(ch=='<'){
+							token.type = TokenType.MOP;
+							token.word = "<<";
 							token.value=token.word;
 							nextChar();
 						}else{
