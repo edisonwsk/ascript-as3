@@ -15,14 +15,13 @@ package
 
 	/**
 	 * 这个例子仅仅是作为acript使用的一个例子
-	 * 其中用到了Tweenlite,请自行下载并引用该类库
-	 * ascript类库也请自行编译引用
-	 * 因为新版的ascript类库兼容脚本的动态加载，使用了文件系统,需要引入air类库，同时定义编译参数:-define=CONFIG::air,true
 		重要:
-		 * 所有script目录下的as文件为可以作为脚本运行和as3文件兼容，
-		 * 因此你可以用as3的编辑器进行书写,享受充分的语法提示
-		 * 当你需要对其按脚本运行的时候,你必须将其复制到发布目录下,如 bin-debug/script
-		 
+		 1.用到了Tweenlite,Starling,请自行下载并引用这2个类库
+		 2.ascript类库也请自行编译为swc引用
+		 3.例子中script目录下的as文件将作为ascript脚本运行，但是你完全可以在开发的时候按照as3的格式编写,
+		 	享受充分的语法提示,
+		 4,不过当你需要对其按脚本运行的时候,你必须将其复制到发布目录下,如 bin-debug/script
+		 5.新版的ascript类库兼容使用了文件系统,需要引入air类库，同时定义条件编译参数:-define=CONFIG::air,true
 	 * @author dayu
 	 * 2013.9.14
 	 */	
