@@ -18,10 +18,10 @@ package
 		重要:
 		 1.用到了Tweenlite,Starling,请自行下载并引用这2个类库
 		 2.ascript类库也请自行编译为swc引用
-		 3.例子中script目录下的as文件将作为ascript脚本运行，但是你完全可以在开发的时候按照as3的格式编写,
-		 	享受充分的语法提示,
-		 4,不过当你需要对其按脚本运行的时候,你必须将其复制到发布目录下,如 bin-debug/script
-		 5.新版的ascript类库兼容使用了文件系统,需要引入air类库，同时定义条件编译参数:-define=CONFIG::air,true
+		 3.例子中script目录下的as文件将作为ascript脚本运行，不过你可以在开发的时候忽略掉这一点,
+		 用熟悉的as3的语法编写,享受充分的语法提示和错误提示
+		 4,当你编写完成,需要对其按脚本运行的时候,则必须将其复制到发布目录下,如 bin-debug/script
+		 5.新版的ascript类库使用了文件系统,需要引入air类库，同时定义条件编译参数:-define=CONFIG::air,true
 	 * @author dayu
 	 * 2013.9.14
 	 */	
