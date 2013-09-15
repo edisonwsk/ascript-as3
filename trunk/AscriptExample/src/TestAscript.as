@@ -2,6 +2,7 @@ package
 {
 	import com.greensock.TweenLite;
 	import com.greensock.easing.Linear;
+	import com.sociodox.theminer.TheMiner;
 	
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
@@ -10,6 +11,9 @@ package
 	import flash.utils.getTimer;
 	
 	import parser.Script;
+	
+	import script.ClassA;
+	import script.TestTweenLite;
 	
 	import starling.core.Starling;
 
@@ -27,36 +31,46 @@ package
 	 */	
 	public class TestAscript extends Sprite
 	{
+		private var useascript:Boolean=false;//解释器执行模式,会执行发布的script目录下as文件
 		public function TestAscript()
 		{
 			//初始化脚本环境,
+			this.addChild(new TheMiner());
 			Script.init(this,null);
+			stage.align = StageAlign.TOP_LEFT;
+			
+			stage.scaleMode = StageScaleMode.NO_SCALE;   
 			//
-			//------------以下为测试
-			//新建一个脚本类,返回一个脚本类的实例对象p
 			var p=Script.New("ClassA");
 			var t=getTimer();
-			trace(p.a(100));//100次的递归函数调用
+			trace(p.a(1000));//100次的递归函数调用
 			trace("耗时="+(getTimer()-t));//耗时计算
-			//
+			//------------以下为测试
+			//新建一个脚本类,返回一个脚本类的实例对象p
 			TweenLite.defaultEase=Linear.easeNone;
-			//测试显示对象+TweenLite;
-			
 			//创建100个随机运动的小球
-			for(var i=0;i<100;i++){
-				Script.New("TestTweenLite",this);
+			if(useascript){
+				//运行于脚本模式
+				for(var i=0;i<100;i++){
+					//加载的script下的as文件解释执行
+					Script.New("TestTweenLite",this);
+				}
+			}else{
+				//运行于as3模式，真正的as3执行
+				for(var i=0;i<100;i++){
+					new TestTweenLite(this);
+				}
 			}
 			//是的，你会看到脚本的效率并不低
 			
 			//接下来我们测试下最热的starling
 			//开启后可以在屏幕上进行绘制
-			starling();
+			//starling();
+			
 		}
 		private var mStarling:Starling;
 		public function starling(){
-			stage.align = StageAlign.TOP_LEFT;
 			
-			stage.scaleMode = StageScaleMode.NO_SCALE;   
 			Starling.handleLostContext = true;
 			Starling.multitouchEnabled=true;
 			// create our Starling instance   
