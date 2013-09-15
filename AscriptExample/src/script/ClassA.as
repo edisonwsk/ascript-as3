@@ -11,7 +11,7 @@ package script
 		{
 			trace(a(10));
 		}
-		function a(b){
+		public function a(b){
 			if(b>1){
 				return b+a(b-1);
 			}
