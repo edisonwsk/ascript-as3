@@ -58,6 +58,9 @@ package parser
 			init(explist||[]);//初始化字段，调用构造函数
 		}
 		//
+		public function toString():String{
+			return this._classname;
+		} 
 		override flash_proxy function callProperty(methodName:*, ... args):* {
 			if(methodName is QName){
 				methodName=(methodName as QName).localName;
@@ -123,6 +126,9 @@ package parser
 		}
 		public function call(funcname:String,explist:Array){
 			var re=null;
+			if(funcname=="navigateToURL"){
+				trace(2);
+			}
 			try{
 				var node:GNode=__rootnode.motheds[funcname];
 				if(node && node.nodeType==GNodeType.FunDecl){
@@ -733,10 +739,11 @@ package parser
 							
 							if(_super[vname] is Function){
 								return callLocalFunc(_super,vname,explist);
-							}else if(Script.defaults[vname] is Function){
-								return (Script.defaults[vname] as Function).apply(null,explist);
+							}else if(__API[vname] is Function){
+								return (__API[vname] as Function).apply(null,explist);
 								//
-							}else if(__rootnode.motheds[vname]==undefined){
+							}else if(__rootnode.motheds[vname]==undefined && Script.__globaldy){
+								
 								if(Script.__globaldy._rootnode.motheds[vname]==undefined){
 									//自身不存在该方法
 									if(__API[vname]){
