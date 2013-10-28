@@ -1,1 +1,1 @@
-#ascript和as3的交互
+#summary ascript和as3的交互
