@@ -30,4 +30,33 @@ package script
 
 具体的as3代码如下：
 {{{
+package
+{
+    import flash.display.Sprite;
+    import flash.events.Event;
+    import flash.net.URLLoader;
+    import flash.net.URLRequest;
+    
+    import parser.Script;
+    //项目的文档类
+    public class AscriptTest extends Sprite
+    {
+
+        private var loader:URLLoader;
+        public function AscriptTest()
+        {
+            loader=new URLLoader;
+            loader.addEventListener(Event.COMPLETE,onLoadScriptComplete);
+            loader.load(new URLRequest("script/AscriptClass.as"));
+        }
+        
+        protected function onLoadScriptComplete(event:Event):void
+        {
+            var data:String=loader.data as String;
+            Script.init(this);
+            Script.LoadFromString(data);
+            Script.execute("var ascriptIns=new AscriptClass();");
+        }
+    }
+}
 }}}
