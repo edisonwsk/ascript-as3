@@ -6,22 +6,14 @@
 
 = Ascript是否支持继承？ =
 
-Ascript支持继承，但是不支持extends关键字，Ascript类有一个关键字super，可以通过super=SuperClass来实现继承。下面的示例建立了一个Math类子类：
+Ascript支持继承，但是不支持extends关键字，Ascript类的实例有一个_super属性，可以通过instanceB.super=instanceA来实现继承，这里是B继承自A。下面的示例建立了一个AscriptClass类的实例ascriptIns，指定ascriptIns的父类是Math类：
 
 {{{
-package script
-{
-    public class AscriptClass
-    {
-        public function AscriptClass()
-        {
-            super=Math;
-        }
-        public function AscriptMethod(a:Number,b:Number):Number{
-            return max(a,b);
-        }
-    }
-}
+...初始化脚本引擎...
+...加载Ascript类文件...
+var ascriptIns:Object=Script.New("AscriptClass");
+ascriptIns._super=Math;
+trace(ascriptIns.max(120,10000));
 }}}
 
 *注意：继承的功能没有经过太多的测试，请谨慎使用。*
