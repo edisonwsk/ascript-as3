@@ -2,7 +2,7 @@
 
 ascript和as3几乎是无缝结合的，您可以从ascript调用as3的接口（包括自定义类的接口），也可以从as3的代码里调用ascript的接口。
 
-=Ascript调用as3的接口=
+=Ascript类调用as3的接口=
 
 ascript调用as3的接口就像as3与as3的交互一样简单。下面这个例子演示了如何在Ascript类里调用as3的Math类，并把Math的一个属性赋值给Ascript类里的一个变量。
 
@@ -23,7 +23,7 @@ package script
     }
 }
 }}}
-想要运行上面的Ascript代码，需要在as3里进行下面的步骤：
+想要运行上面的Ascript类的代码，需要在as3里进行下面的步骤：
  # 初始化脚本引擎，关于如何初始化脚本引擎，请参考gettingStarted
  # 将含有Ascript的文本文件加载进来到脚本引擎里。
  # 在脚本引擎里初始化一个AscriptClass类的实例。
@@ -59,4 +59,12 @@ package
         }
     }
 }
+}}}
+
+可以看到输出面板输出了以下内容
+{{{
+脚本类:__DY解析完成,可以创建其实例了
+脚本类:AscriptClass解析完成,可以创建其实例了
+PI is 3.141592653589793
+成功创建脚本类=AscriptClass的实例
 }}}
