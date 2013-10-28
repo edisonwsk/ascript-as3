@@ -71,6 +71,6 @@ PI is 3.141592653589793
 }}}
 其中第1,2,4行的输出是脚本引擎自己的输出，第3行是我们的AscriptClass的构造函数的输出。
 
-=ActionScript调用Ascript的接口=
+=as3调用Ascript的接口=
 在上面的例子里，我们始终是通过as3在执行Ascript代码，假如我们需要把某些内容从Ascript传递给as3呢？
 让我们假想一个更具体的应用环境，假如我们用Ascript作配置文件（实际上我们的很多项目用Ascript来做配置文件），我们需要在as3里访问Ascript文件里配置的变量。假设我们有一个Ascript做的配置文件如下：
