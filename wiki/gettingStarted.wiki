@@ -58,3 +58,5 @@ class Cla{
 }
 }}}
 同变量一样，你可以给使用as3的类修饰符，但是AScript会自动忽略这些类修饰符。在AScript类里定义的变量aaa默认是public的，并且不能修改。类中定义的方法也一样。
+
+关于Ascript类的更多操作，可以查看WorkwithAS3。详细讲解了Ascript和as3的交互。
