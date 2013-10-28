@@ -4,10 +4,28 @@
 
 首先确保Ascript文件的路径正确/是最新的，在实际开发过程中，有时候为了代码提示和类型检查会把Ascript放到项目文件里，但是输出的文件在bin-debug或者其他目录，就会找不到文件，如果有报错，请先检查Ascript文件是否存在/是否是最新的。
 
+= Ascript是否支持继承？ =
 
-= Details =
+Ascript支持继承，但是不支持extends关键字，Ascript类有一个关键字super，可以通过super=SuperClass来实现继承。下面的示例建立了一个Math类子类：
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+{{{
+package script
+{
+    public class AscriptClass
+    {
+        /**
+         * pi值 
+         */
+        public var pi:Number;
+        public function AscriptClass()
+        {
+            pi=Math.PI;
+            trace("PI is "+pi);
+            super=Math;
+        }
+        public function AscriptMethod(a:Number,b:Number):Number{
+            return max(a,b);
+        }
+    }
+}
+}}}
