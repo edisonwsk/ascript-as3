@@ -74,7 +74,7 @@ PI is 3.141592653589793
 
 其中第1,2,4行的输出是脚本引擎自己的输出，第3行是我们的AscriptClass的构造函数的输出。
 
-注意，Ascript调用as3的类或者是自定义的as3类，必须import。在早期的Ascript不支持按需类型导入（类似import.*）语法，Ascript2.0开始支持按需类型导入。
+注意，Ascript调用as3的类或者是自定义的as3类，必须import。在早期的Ascript不支持按需类型导入的语法，Ascript2.0开始支持按需类型导入。
 
 =as3调用Ascript的接口=
 
