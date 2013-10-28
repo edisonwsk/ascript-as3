@@ -124,3 +124,17 @@ package
     }
 }
 }}}
+
+==as3调用Ascript函数==
+
+继续上面的例子，在Config.as里增加一个函数。Config.as变成：
+
+{{{
+//Ascript文件 Config.as
+var assetsURL:String="assets/";
+var author:String="dayu";
+var email:String="xiaoxiaosh01@gmail.com";
+function GetAuthorInfo():String{
+    return "author："+author+" email:"+email;
+}
+}}}
