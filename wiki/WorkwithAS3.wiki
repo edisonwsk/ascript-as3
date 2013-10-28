@@ -1,1 +1,5 @@
-#summary ascript和as3的交互
+#summary ascript和ActionScript的交互
+
+ascript和as3几乎是无缝结合的，您可以从ascript调用as3的接口（包括自定义类的接口），也可以从as3的代码里调用ascript的接口。
+
+==Ascript调用as3的接口==
