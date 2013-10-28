@@ -147,3 +147,12 @@ as3里想要调用Ascript的GetAuthorInfo方法的时候，请按照下面的代
 var func:Function=Script.getFunc("GetAuthorInfo");
 trace(func());
 }}}
+
+==as3里实例化Ascript类==
+
+能够定义类是Ascript的特点之一。假如我们的方法和变量写在一个Ascript类里，我们想要访问Ascript类里定义的变量和方法，就需要先实例化这个类。
+
+{{{
+}}}
+
+*注意：Ascript类不支持类方法和类变量。但是写static修饰符并不会报错，实际上脚本解释器会自动忽略变量和方法的修饰符，因此所有的变量和方法实际上都是public的*
