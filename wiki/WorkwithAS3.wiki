@@ -23,3 +23,5 @@ package script
     }
 }
 }}}
+想要运行上面的Ascript代码，需要在as3里进行下面的步骤：
+ # 初始化脚本引擎，关于如何初始化脚本引擎，请参考gettingStarted
