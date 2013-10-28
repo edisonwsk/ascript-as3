@@ -13,14 +13,8 @@ package script
 {
     public class AscriptClass
     {
-        /**
-         * pi值 
-         */
-        public var pi:Number;
         public function AscriptClass()
         {
-            pi=Math.PI;
-            trace("PI is "+pi);
             super=Math;
         }
         public function AscriptMethod(a:Number,b:Number):Number{
