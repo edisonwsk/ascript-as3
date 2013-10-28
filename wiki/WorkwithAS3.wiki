@@ -138,3 +138,12 @@ function GetAuthorInfo():String{
     return "author："+author+" email:"+email;
 }
 }}}
+
+as3里想要调用Ascript的GetAuthorInfo方法的时候，请按照下面的代码进行操作。这里省略了初始化脚本引擎以及加载Config.as文件的代码。
+
+{{{
+...初始化脚本引擎...
+...加载Config.as...
+var func:Function=Script.getFunc("GetAuthorInfo");
+            trace(func());
+}}}
