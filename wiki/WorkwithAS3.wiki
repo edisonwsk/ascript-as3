@@ -181,4 +181,34 @@ package script
 想要在as3里调用AscriptClass的AscriptMethod方法，需要先实例化AscriptClass。
 
 {{{
+package
+{
+    import flash.display.Sprite;
+    import flash.events.Event;
+    import flash.net.URLLoader;
+    import flash.net.URLRequest;
+    
+    import parser.Script;
+    
+    public class AscriptTest extends Sprite
+    {
+
+        private var loader:URLLoader;
+        public function AscriptTest()
+        {
+            loader=new URLLoader;
+            loader.addEventListener(Event.COMPLETE,onLoadScriptComplete);
+            loader.load(new URLRequest("script/AscriptClass.as"));
+        }
+        
+        protected function onLoadScriptComplete(event:Event):void
+        {
+            var data:String=loader.data as String;
+            Script.init(this);
+            Script.LoadFromString(data);
+            var ascriptIns:Object=Script.New("AscriptClass");
+            trace(ascriptIns.AscriptMethod(120,110));
+        }
+    }
+}
 }}}
