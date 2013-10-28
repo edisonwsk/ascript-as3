@@ -30,6 +30,7 @@ package script
  # 在脚本引擎里初始化一个AscriptClass类的实例。
 
 具体的as3代码如下：
+
 {{{
 package
 {
@@ -63,12 +64,14 @@ package
 }}}
 
 可以看到输出面板输出了以下内容
+
 {{{
 脚本类:__DY解析完成,可以创建其实例了
 脚本类:AscriptClass解析完成,可以创建其实例了
 PI is 3.141592653589793
 成功创建脚本类=AscriptClass的实例
 }}}
+
 其中第1,2,4行的输出是脚本引擎自己的输出，第3行是我们的AscriptClass的构造函数的输出。
 
 =as3调用Ascript的接口=
@@ -76,3 +79,10 @@ PI is 3.141592653589793
 在上面的例子里，我们始终是通过as3在执行Ascript代码，假如我们需要把某些内容从Ascript传递给as3呢？
 
 让我们假想一个更具体的应用环境，假如我们用Ascript作配置文件（实际上我们的很多项目用Ascript来做配置文件），我们需要在as3里访问Ascript文件里配置的变量。假设我们有一个Ascript做的配置文件如下：
+
+{{{
+//Ascript文件
+var assetsURL:String="assets/";
+var author:String="dayu";
+var email:String="xiaoxiaosh01@gmail.com";
+}}}
