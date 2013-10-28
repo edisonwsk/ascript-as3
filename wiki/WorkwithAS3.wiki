@@ -74,15 +74,53 @@ PI is 3.141592653589793
 
 其中第1,2,4行的输出是脚本引擎自己的输出，第3行是我们的AscriptClass的构造函数的输出。
 
+注意，Ascript调用as3的类或者是自定义的as3类，必须import。在早期的Ascript不支持按需类型导入（类似import.*）语法，Ascript2.0开始支持按需类型导入。
+
 =as3调用Ascript的接口=
 
-在上面的例子里，我们始终是通过as3在执行Ascript代码，假如我们需要把某些内容从Ascript传递给as3呢？
+在上面的例子里，我们始终是通过as3在执行Ascript代码，假如我们需要把某些内容从Ascript传递给as3呢？as3调用Ascript分别为调用Ascript定义的变量，Ascript的函数，以及实例化Ascript的类。
+
+==as3调用Ascript变量==
 
 让我们假想一个更具体的应用环境，假如我们用Ascript作配置文件（实际上我们的很多项目用Ascript来做配置文件），我们需要在as3里访问Ascript文件里配置的变量。假设我们有一个Ascript做的配置文件如下：
 
 {{{
-//Ascript文件
+//Ascript文件 Config.as
 var assetsURL:String="assets/";
 var author:String="dayu";
 var email:String="xiaoxiaosh01@gmail.com";
+}}}
+
+在上面的Ascript代码里，三个变量定义在脚本的最外层，也可以看做是脚本的全局变量。在as3里可以通过Script.vm访问到脚本的全局变量。下面的as3代码完整的显示了如何加载Ascript的文件并访问Ascript代码里的author变量。
+
+{{{
+package
+{
+    import flash.display.Sprite;
+    import flash.events.Event;
+    import flash.net.URLLoader;
+    import flash.net.URLRequest;
+    
+    import parser.Script;
+    
+    public class AscriptTest extends Sprite
+    {
+
+        private var loader:URLLoader;
+        public function AscriptTest()
+        {
+            loader=new URLLoader;
+            loader.addEventListener(Event.COMPLETE,onLoadScriptComplete);
+            loader.load(new URLRequest("script/Config.as"));
+        }
+        
+        protected function onLoadScriptComplete(event:Event):void
+        {
+            var data:String=loader.data as String;
+            Script.init(this);
+            Script.execute(data);
+            trace(Script.vm.author);
+        }
+    }
+}
 }}}
