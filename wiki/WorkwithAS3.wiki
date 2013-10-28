@@ -145,5 +145,5 @@ as3里想要调用Ascript的GetAuthorInfo方法的时候，请按照下面的代
 ...初始化脚本引擎...
 ...加载Config.as...
 var func:Function=Script.getFunc("GetAuthorInfo");
-            trace(func());
+trace(func());
 }}}
