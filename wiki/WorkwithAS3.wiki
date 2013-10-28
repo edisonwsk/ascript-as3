@@ -7,6 +7,7 @@ ascript和as3几乎是无缝结合的，您可以从ascript调用as3的接口（
 ascript调用as3的接口就像as3与as3的交互一样简单。下面这个例子演示了如何在Ascript类里调用as3的Math类，并把Math的一个属性赋值给Ascript类里的一个变量。
 
 {{{
+//这是一个Ascript类
 package script
 {
     public class AscriptClass
