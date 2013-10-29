@@ -6,7 +6,7 @@
 
 = Ascript是否支持继承？ =
 
-Ascript不支持继承，但是Ascript类的实例有一个_super属性，可以通过instanceB.super=instanceA来实现继承，这里是B继承自A。下面的示例建立了一个AscriptClass类的实例ascriptIns，指定ascriptIns的父类是Math类：
+Ascript不支持继承，但是Ascript类的实例有一个_super属性，可以通过instanceB.super=instanceA来实现调用父类的接口和属性，这里是B继承自A。下面的示例建立了一个AscriptClass类的实例ascriptIns，指定ascriptIns的父类是Math类：
 
 {{{
 ...初始化脚本引擎...
