@@ -8,15 +8,12 @@
 Script.root默认指向Script.init时传入的第一个参数，当然你也可以动态指定Script.root的值并在代码的任何地方访问它。
 
 == Script.scriptdir ==
-该变量定义了脚本默认的加载地址，默认地址为script/，可以手动定义成其他地址，在查找相关的类文件时会根据scriptdir来加载类文件。
+该变量定义了脚本默认的加载地址，默认地址为script/，可以手动定义成其他地址，在查找相关的类文件时会根据scriptdir来加载类文件，比如在某个Ascript类里import了一个包的操作。
 
 == Script.vm ==
 vm上保存了脚本的全局函数和全局变量。关于全局变量的定义可以参考[gettingStarted]
 
 
-= Details =
+= 公共方法 =
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+== Script.init ==
