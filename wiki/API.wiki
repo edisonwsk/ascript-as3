@@ -1,0 +1,16 @@
+#summary Ascript的公共接口
+
+自ascript2.0.1版本以来，ascript缩减了可见的公共变量和方法，使得as3和ascript的交互更加简单和集中。下面将具体说明各个变量和方法的使用。
+
+= 公共变量 =
+
+== Script.root ==
+Script.root默认指向Script.init时传入的第一个参数，当然你也可以动态指定Script.root的值并在代码的任何地方访问它。
+
+
+= Details =
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
